@@ -1,0 +1,11 @@
+{
+    "version": "1.0.0",
+    "name": "btp-pipelines-approuter",
+    "description": "Standalone Approuter",
+    "dependencies": {
+        "@sap/approuter": "^16.0.2"
+    },
+    "scripts": {
+        "start": "node node_modules/@sap/approuter/approuter.js"
+    }
+}
