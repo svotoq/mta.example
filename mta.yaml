@@ -1,25 +1,24 @@
 _schema-version: "3.2"
 ID: btp-pipelines
 version: 0.0.1
-parameters:
-  deploy_mode: html5-repo
-  
+
 modules:
-- name: btp-pipelines-app-content-deployer
-  type: com.sap.application.content
+- name: btp-pipelines-app-content-deployer 
+  type: com.sap.application.content #Generic Application Content Deployed used only to deploy zip archive into content-target
   path: .
   requires:
-  - name: btp-pipelines-repo-host
+  - name: btp-pipelines-html5-repo-host #Service that hosts statis files
     parameters:
-      content-target: true
+      content-target: true #Service to which content must be deployed
+  - name: btp-pipelines-html5-repo-runtime #Service allows to consume static files from the host
   build-parameters:
     build-result: resources
     requires:
-    - artifacts:
+    - artifacts: #references to the apps that must be deployed
       - btppipelinesfiori.zip
-      name: btppipelinesfiori
+      name: btppipelinesfiori #reference to the build config of the app
       target-path: resources/
-- name: btppipelinesfiori
+- name: btppipelinesfiori #configuration that specifies how to build the app
   type: html5
   path: fiori
   build-parameters:
@@ -30,27 +29,15 @@ modules:
     - npm run build:cf
     supported-platforms: []
 resources:
-- name: btp-pipelines-repo-host
+- name: btp-pipelines-html5-repo-host #Service to which content must be deployed
+  type: org.cloudfoundry.managed-service #managed-service means that if there is no service - create it
+  parameters:
+    service: html5-apps-repo
+    service-name: btp-pipelines-html5-repo-host
+    service-plan: app-host
+- name: btp-pipelines-html5-repo-runtime #Service allows to consume static files from the host
   type: org.cloudfoundry.managed-service
   parameters:
     service: html5-apps-repo
-    service-name: btp-pipelines-html5-srv
-    service-plan: app-host
-- name: btp-pipelines-destination-service
-  type: org.cloudfoundry.managed-service
-  parameters:
-    config:
-      HTML5Runtime_enabled: false
-      init_data:
-        instance:
-          destinations:
-          - Authentication: NoAuthentication
-            Name: ui5
-            ProxyType: Internet
-            Type: HTTP
-            URL: https://ui5.sap.com
-          existing_destinations_policy: update
-      version: 1.0.0
-    service: destination
-    service-name: btp-pipelines-destination-service
-    service-plan: lite
+    service-name: btp-pipelines-html5-repo-runtime
+    service-plan: app-runtime
