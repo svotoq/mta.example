@@ -30,6 +30,7 @@ modules:
     requires:
       - name: btp-pipelines-html5-repo-runtime #binding between html5 repo-runtime and approuter
       - name: btp-pipelines-uaa #binding between uaa and approuter
+      - name: btp-pipelines-destination #binding between destination service and approuter
   - name: btppipelinesfiori #configuration that specifies how to build the app
     type: html5
     path: fiori
@@ -62,3 +63,9 @@ resources:
       config:
         xsappname: btp-pipelines
         tenant-mode: dedicated
+  - name: btp-pipelines-destination #used to consume data from destination on the instance/subaccount levels (instance > subaccount)
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: destination
+      service-name: btp-pipelines-destination
+      service-plan: lite
